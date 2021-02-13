@@ -16,9 +16,16 @@ virtualbox_packages:
     - build-essential
     - dkms
     - linux-headers-{{ grains.kernelrelease }}
-    - virtualbox-{{ host.version }}
   - require:
     - pkgrepo: virtualbox_repo
+
+virtualbox_package:
+  pkg.installed:
+    - version: {{ host.version }}
+    - names:
+      - virtualbox
+    - require:
+      - pkgrepo: virtualbox_repo
 
 virtualbox_setup_kernel_drivers:
   cmd.wait:
@@ -26,6 +33,7 @@ virtualbox_setup_kernel_drivers:
   - cwd: /root
   - watch:
     - pkg: virtualbox_packages
+    - pkg: virtualbox_package
 
 {%- elif grains.os_family == "RedHat" %}
 
